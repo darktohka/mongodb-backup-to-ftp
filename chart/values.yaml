@@ -1,0 +1,11 @@
+cron:
+  schedule: "0 * * * *"
+  image: "darktohka/mongodb-backup-to-ftp:latest"
+
+mongodb:
+  uri: "mongodb://<mongo-server>"
+
+ftp:
+  server: "<ftp-server>"
+  username: "<ftp-username>"
+  password: "<ftp-password>"

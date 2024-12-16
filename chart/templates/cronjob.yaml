@@ -1,0 +1,41 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: mongodb-backup-cronjob
+spec:
+  schedule: {{ .Values.cronJob.schedule | quote }}
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: mongodb-backup
+            image: {{ .Values.cronJob.image }}
+            env:
+            - name: MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-backup-secrets
+                  key: mongodb-uri
+            - name: FTP_SERVER
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-backup-secrets
+                  key: ftp-server
+            - name: FTP_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-backup-secrets
+                  key: ftp-username
+            - name: FTP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-backup-secrets
+                  key: ftp-password
+            volumeMounts:
+            - name: backup-volume
+              mountPath: /backup
+          restartPolicy: OnFailure
+          volumes:
+          - name: backup-volume
+            emptyDir: {}
