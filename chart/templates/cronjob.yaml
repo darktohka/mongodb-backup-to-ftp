@@ -3,14 +3,14 @@ kind: CronJob
 metadata:
   name: mongodb-backup-cronjob
 spec:
-  schedule: {{ .Values.cronJob.schedule | quote }}
+  schedule: {{ .Values.cron.schedule | quote }}
   jobTemplate:
     spec:
       template:
         spec:
           containers:
           - name: mongodb-backup
-            image: {{ .Values.cronJob.image }}
+            image: "darktohka/mongodb-backup-to-ftp:latest"
             env:
             - name: MONGODB_URI
               valueFrom:
@@ -32,10 +32,4 @@ spec:
                 secretKeyRef:
                   name: mongodb-backup-secrets
                   key: ftp-password
-            volumeMounts:
-            - name: backup-volume
-              mountPath: /backup
           restartPolicy: OnFailure
-          volumes:
-          - name: backup-volume
-            emptyDir: {}
