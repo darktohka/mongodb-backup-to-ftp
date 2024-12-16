@@ -15,12 +15,14 @@ jobs:
           sudo podman run --rm --privileged docker.io/tonistiigi/binfmt --install all
       - name: Build the image
         run: |
+          cd image
           buildah bud --squash --format=docker \
             --tag "${{ secrets.DOCKER_TAG }}:latest" \
-            --manifest mongodb-backup \
+            --manifest image \
             --platform linux/arm64 \
             --platform linux/amd64 \
             .
       - name: Push the image
         run: |
-          buildah manifest push --all mongodb-backup docker://docker.io/${{ secrets.DOCKER_TAG }}
+          cd image
+          buildah manifest push --all image docker://docker.io/${{ secrets.DOCKER_TAG }}
